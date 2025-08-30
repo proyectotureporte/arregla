@@ -1,7 +1,7 @@
 <?php
 // Configuración de email - CAMBIA ESTOS VALORES
-$to_email = "contacto@arregla.com"; // Cambia por tu email
-$from_email = "noreply@arregla.com"; // Cambia por tu email de envío
+$to_email = "ferneyolicas@gmail.com"; // Cambia por tu email
+$from_email = "ferneyolicas@gmail.com"; // Cambia por tu email de envío
 
 // Verificar que el formulario fue enviado por POST
 if ($_SERVER["REQUEST_METHOD"] != "POST") {
