@@ -16,6 +16,19 @@ export default async function handler(req, res) {
     });
   }
 
+  // Verificar variables de entorno
+  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+    console.error('Variables de entorno faltantes:', {
+      EMAIL_USER: process.env.EMAIL_USER ? 'SET' : 'NOT SET',
+      EMAIL_PASS: process.env.EMAIL_PASS ? 'SET' : 'NOT SET',
+      TO_EMAIL: process.env.TO_EMAIL ? 'SET' : 'NOT SET'
+    });
+    return res.status(500).json({
+      success: false,
+      message: 'Configuración de email faltante. Contacta al administrador.'
+    });
+  }
+
   try {
     const { name, cedula, ciudad, telefono, email, autorizacion } = req.body;
 
