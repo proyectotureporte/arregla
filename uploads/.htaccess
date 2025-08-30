@@ -1,0 +1,62 @@
+# Prevenir ejecución de scripts en el directorio de uploads
+<Files "*.php">
+    Order Deny,Allow
+    Deny from all
+</Files>
+
+<Files "*.phtml">
+    Order Deny,Allow
+    Deny from all
+</Files>
+
+<Files "*.php3">
+    Order Deny,Allow
+    Deny from all
+</Files>
+
+<Files "*.php4">
+    Order Deny,Allow
+    Deny from all
+</Files>
+
+<Files "*.php5">
+    Order Deny,Allow
+    Deny from all
+</Files>
+
+<Files "*.pl">
+    Order Deny,Allow
+    Deny from all
+</Files>
+
+<Files "*.py">
+    Order Deny,Allow
+    Deny from all
+</Files>
+
+<Files "*.jsp">
+    Order Deny,Allow
+    Deny from all
+</Files>
+
+<Files "*.asp">
+    Order Deny,Allow
+    Deny from all
+</Files>
+
+<Files "*.sh">
+    Order Deny,Allow
+    Deny from all
+</Files>
+
+# Solo permitir archivos de imagen y PDF
+<FilesMatch "\.(jpg|jpeg|png|gif|pdf)$">
+    Order Allow,Deny
+    Allow from all
+</FilesMatch>
+
+# Denegar todo lo demás
+<FilesMatch "^(?!.*\.(jpg|jpeg|png|gif|pdf)$).*$">
+    Order Deny,Allow
+    Deny from all
+</FilesMatch>
