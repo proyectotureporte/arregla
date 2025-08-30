@@ -668,13 +668,21 @@
     }
 
     // Form Submission Logic
-    document.getElementById('leadForm').addEventListener('submit', function(e){
+    document.getElementById('leadForm').addEventListener('submit', async function(e){
         e.preventDefault(); 
         const form = this;
         const btn = form.querySelector('button[type=submit]');
         const originalBtnText = btn.textContent;
         
-        // Validación básica del frontend
+        // Helper function to read file as Base64
+        const toBase64 = file => new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = error => reject(error);
+        });
+
+        // Basic frontend validation
         const requiredFields = form.querySelectorAll('input[required], input[type="checkbox"][required]');
         let isValid = true;
         let errorMessage = '';
@@ -693,7 +701,6 @@
             }
         });
         
-        // Validar email
         const emailField = form.querySelector('input[type="email"]');
         if (emailField && emailField.value) {
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -711,16 +718,38 @@
         btn.disabled = true;
         btn.textContent = 'Enviando...';
         
-        // Enviar formulario real
         const url = form.action;
         const formData = new FormData(form);
         
-        // Convertir FormData a JSON para Vercel Functions
+        // Convert FormData to a JSON object
         const data = {};
         for (let [key, value] of formData.entries()) {
-            data[key] = value;
+            if (key !== 'document') { // Exclude file input from direct mapping
+                data[key] = value;
+            }
+        }
+
+        // Handle file attachment
+        const fileInput = form.querySelector('input[type="file"]');
+        if (fileInput.files.length > 0) {
+            const file = fileInput.files[0];
+            try {
+                const base64File = await toBase64(file);
+                data.attachment = {
+                    filename: file.name,
+                    content: base64File,
+                    contentType: file.type
+                };
+            } catch (error) {
+                console.error('Error converting file to Base64:', error);
+                showNotification('Error al procesar el archivo adjunto.', 'error');
+                btn.disabled = false;
+                btn.textContent = originalBtnText;
+                return;
+            }
         }
         
+        // Send the form data
         fetch(url, { 
             method: 'POST', 
             headers: {
@@ -729,25 +758,20 @@
             body: JSON.stringify(data)
         })
         .then(response => {
-            // Verificar si la respuesta es válida
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                // Try to get error message from server response
+                return response.json().then(errData => {
+                    throw new Error(errData.message || `HTTP error! status: ${response.status}`);
+                }).catch(() => {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                });
             }
-            
-            // Verificar si la respuesta es JSON
-            const contentType = response.headers.get('content-type');
-            if (!contentType || !contentType.includes('application/json')) {
-                throw new Error('La respuesta del servidor no es JSON válido');
-            }
-            
             return response.json();
         })
         .then(data => {
             if(data && data.success){
                 btn.textContent = '¡Enviado!';
                 btn.style.background = 'linear-gradient(135deg, #00a86b 0%, #22d3ee 100%)';
-                
-                // Mostrar mensaje de éxito
                 showNotification('¡Formulario enviado correctamente! Te contactaremos pronto.', 'success');
                 
                 setTimeout(() => {
