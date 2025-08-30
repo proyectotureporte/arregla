@@ -1,14 +1,36 @@
 <?php
+// Configurar headers para JSON
+header('Content-Type: application/json; charset=utf-8');
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: POST');
+header('Access-Control-Allow-Headers: Content-Type');
+
+// Habilitar reporte de errores para debug
+error_reporting(E_ALL);
+ini_set('display_errors', 0); // No mostrar errores en pantalla, solo en logs
+
 // Configuración de email - CAMBIA ESTOS VALORES
 $to_email = "ferneyolicas@gmail.com"; // Cambia por tu email
 $from_email = "ferneyolicas@gmail.com"; // Cambia por tu email de envío
 
+// Función para enviar respuesta JSON
+function sendJsonResponse($success, $message, $errors = null) {
+    $response = ["success" => $success, "message" => $message];
+    if ($errors !== null) {
+        $response["errors"] = $errors;
+    }
+    echo json_encode($response, JSON_UNESCAPED_UNICODE);
+    exit;
+}
+
 // Verificar que el formulario fue enviado por POST
 if ($_SERVER["REQUEST_METHOD"] != "POST") {
     http_response_code(405);
-    echo json_encode(["success" => false, "message" => "Método no permitido"]);
-    exit;
+    sendJsonResponse(false, "Método no permitido");
 }
+
+// Iniciar try-catch para capturar errores
+try {
 
 // Función para limpiar datos de entrada
 function clean_input($data) {
@@ -56,8 +78,7 @@ if (!isset($_POST['autorizacion'])) {
 // Si hay errores, devolverlos
 if (!empty($errors)) {
     http_response_code(400);
-    echo json_encode(["success" => false, "message" => "Errores de validación", "errors" => $errors]);
-    exit;
+    sendJsonResponse(false, "Errores de validación", $errors);
 }
 
 // Procesar archivo adjunto si existe
@@ -106,8 +127,7 @@ if (isset($_FILES['document']) && $_FILES['document']['error'] == 0) {
 // Si hay errores con el archivo, devolverlos
 if (!empty($errors)) {
     http_response_code(400);
-    echo json_encode(["success" => false, "message" => "Errores de validación", "errors" => $errors]);
-    exit;
+    sendJsonResponse(false, "Errores de validación", $errors);
 }
 
 // Crear el asunto del email con formato personalizado
@@ -355,15 +375,16 @@ if ($attachment_path && file_exists($attachment_path)) {
 
 // Respuesta
 if ($mail_sent) {
-    echo json_encode([
-        "success" => true, 
-        "message" => "Formulario enviado correctamente. Te contactaremos pronto."
-    ]);
+    sendJsonResponse(true, "Formulario enviado correctamente. Te contactaremos pronto.");
 } else {
     http_response_code(500);
-    echo json_encode([
-        "success" => false, 
-        "message" => "Error al enviar el formulario. Por favor, inténtalo de nuevo."
-    ]);
+    sendJsonResponse(false, "Error al enviar el formulario. Por favor, inténtalo de nuevo.");
+}
+
+} catch (Exception $e) {
+    // Capturar cualquier error inesperado
+    error_log("Error en process_form.php: " . $e->getMessage());
+    http_response_code(500);
+    sendJsonResponse(false, "Error interno del servidor. Por favor, inténtalo de nuevo.");
 }
 ?>
