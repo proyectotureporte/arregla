@@ -266,9 +266,19 @@ export default async function handler(req, res) {
 
   } catch (error) {
     console.error('Error al procesar formulario:', error);
+    console.error('Error details:', {
+      message: error.message,
+      stack: error.stack,
+      env: {
+        EMAIL_USER: process.env.EMAIL_USER ? 'SET' : 'NOT SET',
+        EMAIL_PASS: process.env.EMAIL_PASS ? 'SET' : 'NOT SET',
+        TO_EMAIL: process.env.TO_EMAIL ? 'SET' : 'NOT SET'
+      }
+    });
     return res.status(500).json({
       success: false,
-      message: 'Error interno del servidor. Por favor, inténtalo de nuevo.'
+      message: 'Error interno del servidor. Por favor, inténtalo de nuevo.',
+      debug: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 }
