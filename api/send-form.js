@@ -67,12 +67,14 @@ export default async function handler(req, res) {
       });
     }
 
-    // Configurar el transporter de email
+    // Configurar el transporter de email para Zoho
     const transporter = nodemailer.createTransporter({
-      service: 'gmail', // Puedes cambiar por tu proveedor
+      host: 'smtp.zoho.com',
+      port: 587,
+      secure: false, // true para 465, false para otros puertos
       auth: {
-        user: process.env.EMAIL_USER, // Configurar en Vercel
-        pass: process.env.EMAIL_PASS  // Configurar en Vercel
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
       }
     });
 
