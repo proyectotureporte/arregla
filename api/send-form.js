@@ -1,6 +1,9 @@
 // Vercel Function para procesar el formulario
 const nodemailer = require('nodemailer');
 
+// DEBUG: Ver qué contiene el objeto nodemailer importado
+console.log('Contenido de nodemailer:', nodemailer);
+
 export default async function handler(req, res) {
   // Configurar headers CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
