@@ -2,7 +2,7 @@
   "buildCommand": "echo 'No build needed'",
   "outputDirectory": "public",
   "functions": {
-    "api/send-form.js": {
+    "send-form.js": {
       "maxDuration": 30
     }
   }
