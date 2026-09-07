@@ -1,6 +1,6 @@
 # ARREGLA — mapa del proyecto
 
-Actualizado: 2026-09-07 · Commit: `885ac2f`
+Actualizado: 2026-09-07 · Commit: `901e8d8`
 
 ## Identidad y stack
 
@@ -68,6 +68,7 @@ La aplicación no requiere variables funcionales. Next.js puede leer `PORT` al e
 - CI/CD: `.github/workflows/deploy-vps.yml` se conecta al alias público del VPS mediante secretos dedicados y actualiza `/var/www/arregla`.
 - Runtime: PM2 `arregla`, puerto `4006`, configuración `ecosystem.config.cjs`; `4005` pertenece a `viis` y queda fuera de alcance.
 - Proxy: Nginx usa `deploy/nginx.conf` para `arregla.com.co` y `www.arregla.com.co` hacia `127.0.0.1:4006`.
+- Primer despliegue verificado el 2026-09-07: workflow `34131004136`, commit `901e8d8`, PM2 online, health directo y por Nginx en `200`. Backup previo: `/var/backups/vps-admin/2026-09-07-135635`.
 - El repositorio conserva una publicación legacy de GitHub Pages y una integración histórica de Vercel. No son el destino operativo de ARREGLA. El webhook de Vercel puede ejecutarse tras un push, pero `arregla.vercel.app` sirve una app ajena de servicios en Puerto Rico y nunca debe usarse para verificar este proyecto.
 - `arregla.com.co` y `www.arregla.com.co` resuelven a `15.197.172.60` y muestran un lander, no al VPS `restaurar` (`82.223.109.156`).
 - No se debe sustituir `restaurar.co`, que pertenece a `tureporte-frontend`, ni `/var/www/viis`, que es otra aplicación.
@@ -80,3 +81,4 @@ La aplicación no requiere variables funcionales. Next.js puede leer `PORT` al e
 - 2026-09-07 — Las capturas full-page deben hacer scroll antes de capturar; de lo contrario `IntersectionObserver` deja las secciones inferiores transparentes y la imagen de QA parece vacía aunque el flujo real funcione.
 - 2026-09-07 — La app es solo clara por decisión expresa de marca. La ausencia de dark mode no es un olvido.
 - 2026-09-07 — ARREGLA no estaba aprovisionada en el VPS aunque el repositorio tuviera despliegues históricos externos. Su identidad de producción es `/var/www/arregla` + PM2 `arregla` + `:4006` en `restaurar`.
+- 2026-09-07 — El servicio está desplegado, pero el dominio público seguirá mostrando el lander de `15.197.172.60` hasta cambiar los registros A del proveedor DNS a `82.223.109.156`; después hay que emitir el certificado de `arregla.com.co` y `www.arregla.com.co` en Nginx.
