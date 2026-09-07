@@ -1,20 +1,24 @@
 {
-  "name": "arregla-formulario",
-  "version": "1.0.0",
-  "description": "Formulario de contacto para ARREGLA",
-  "main": "index.html",
+  "name": "arregla",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Sitio de ARREGLA — landing de captación por WhatsApp para personas con dificultades financieras (embargo, secuestro, remate).",
   "scripts": {
-    "dev": "vercel dev",
-    "build": "echo 'No build step required'",
-    "deploy": "vercel --prod"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "nodemailer": "^6.10.1"
+    "lucide-react": "^1.40.0",
+    "next": "^16.3.4",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
   },
   "devDependencies": {
-    "vercel": "^32.7.2"
-  },
-  "engines": {
-    "node": ">=18.0.0"
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "typescript": "^5.6.0"
   }
 }
