@@ -1,0 +1,38 @@
+name: Deploy ARREGLA to VPS
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-arregla
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configure SSH
+        env:
+          VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$VPS_SSH_KEY" > ~/.ssh/arregla_deploy
+          chmod 600 ~/.ssh/arregla_deploy
+
+      - name: Update and deploy
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+        run: |
+          ssh -i ~/.ssh/arregla_deploy -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new "$VPS_USER@$VPS_HOST" '
+            set -euo pipefail
+            if [ ! -d /var/www/arregla/.git ]; then
+              git clone https://github.com/proyectotureporte/arregla.git /var/www/arregla
+            else
+              git -C /var/www/arregla fetch origin main
+              git -C /var/www/arregla reset --hard origin/main
+            fi
+            bash /var/www/arregla/deploy.sh
+          '

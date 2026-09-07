@@ -14,7 +14,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 Landing de captación por WhatsApp para personas y empresas en Colombia con riesgo de embargo, secuestro o remate. El objetivo de conversión es abrir una conversación contextualizada con el número oficial de ARREGLA.
 
-Repositorio: `proyectotureporte/arregla` · rama: `main` · servidor indicado por el propietario: alias SSH `restaurar`.
+Repositorio: `proyectotureporte/arregla` · rama: `main` · servidor: alias SSH `restaurar` · ruta `/var/www/arregla` · PM2 `arregla` · puerto `4006`.
 
 ## Stack y comandos
 
@@ -22,6 +22,7 @@ Repositorio: `proyectotureporte/arregla` · rama: `main` · servidor indicado po
 - CSS propio en `app/globals.css`; iconos Lucide; fuentes Bricolage Grotesque + Hanken Grotesk mediante `next/font`.
 - Este repositorio usa npm porque el artefacto fuente trae `package-lock.json`: `npm ci`, `npm run dev`, `npm run typecheck`, `npm run build`, `npm run start`.
 - `npm run start` lee `PORT` de entorno. Healthcheck: `GET /api/health`.
+- CI/CD: `.github/workflows/deploy-vps.yml` despliega cada push a `main`; `deploy.sh` compila, recarga PM2 y verifica salud.
 
 ## Estructura esencial
 
@@ -41,4 +42,4 @@ Repositorio: `proyectotureporte/arregla` · rama: `main` · servidor indicado po
 - `Interactions` controla los reveals de todas las secciones; un cambio en sus selectores exige verificar la página completa haciendo scroll.
 - No versionar `.env`, `.next`, `node_modules` ni credenciales. La app actual no necesita variables de entorno funcionales.
 - No asumir que `arregla.vercel.app` corresponde a esta marca: a 2026-09-07 sirve una aplicación ajena de servicios en Puerto Rico.
-- Cualquier operación en el VPS `restaurar` exige inventario, healthcheck, plan aprobado, backup y verificación posterior.
+- Cualquier operación en el VPS `restaurar` exige inventario, healthcheck, plan aprobado, backup y verificación posterior. `viis` usa el puerto `4005` y es otra app: no tocarla al operar ARREGLA.

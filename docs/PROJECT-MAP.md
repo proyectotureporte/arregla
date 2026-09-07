@@ -1,6 +1,6 @@
 # ARREGLA — mapa del proyecto
 
-Actualizado: 2026-09-07 · Commit: `44f8599`
+Actualizado: 2026-09-07 · Commit: `885ac2f`
 
 ## Identidad y stack
 
@@ -65,10 +65,12 @@ La aplicación no requiere variables funcionales. Next.js puede leer `PORT` al e
 ## Despliegue conocido
 
 - Repositorio público: `https://github.com/proyectotureporte/arregla`, rama `main`.
-- A 2026-09-07 el repositorio conserva una publicación legacy de GitHub Pages y una integración histórica de Vercel, pero no tiene workflow propio ni secretos de despliegue al VPS.
-- `arregla.vercel.app` sirve actualmente una app ajena de servicios en Puerto Rico; no es un endpoint válido para verificar este proyecto.
+- CI/CD: `.github/workflows/deploy-vps.yml` se conecta al alias público del VPS mediante secretos dedicados y actualiza `/var/www/arregla`.
+- Runtime: PM2 `arregla`, puerto `4006`, configuración `ecosystem.config.cjs`; `4005` pertenece a `viis` y queda fuera de alcance.
+- Proxy: Nginx usa `deploy/nginx.conf` para `arregla.com.co` y `www.arregla.com.co` hacia `127.0.0.1:4006`.
+- El repositorio conserva una publicación legacy de GitHub Pages y una integración histórica de Vercel. No son el destino operativo de ARREGLA. El webhook de Vercel puede ejecutarse tras un push, pero `arregla.vercel.app` sirve una app ajena de servicios en Puerto Rico y nunca debe usarse para verificar este proyecto.
 - `arregla.com.co` y `www.arregla.com.co` resuelven a `15.197.172.60` y muestran un lander, no al VPS `restaurar` (`82.223.109.156`).
-- El inventario del VPS `restaurar` no encontró proceso PM2 ni directorio de despliegue de ARREGLA. No se debe sustituir `restaurar.co`, que pertenece a `tureporte-frontend`.
+- No se debe sustituir `restaurar.co`, que pertenece a `tureporte-frontend`, ni `/var/www/viis`, que es otra aplicación.
 
 ## Lecciones y gotchas
 
@@ -77,3 +79,4 @@ La aplicación no requiere variables funcionales. Next.js puede leer `PORT` al e
 - 2026-09-07 — Next 16 modifica `tsconfig.json` en el primer build y genera/mantiene el bloque de reglas al inicio de `AGENTS.md`.
 - 2026-09-07 — Las capturas full-page deben hacer scroll antes de capturar; de lo contrario `IntersectionObserver` deja las secciones inferiores transparentes y la imagen de QA parece vacía aunque el flujo real funcione.
 - 2026-09-07 — La app es solo clara por decisión expresa de marca. La ausencia de dark mode no es un olvido.
+- 2026-09-07 — ARREGLA no estaba aprovisionada en el VPS aunque el repositorio tuviera despliegues históricos externos. Su identidad de producción es `/var/www/arregla` + PM2 `arregla` + `:4006` en `restaurar`.
