@@ -35,7 +35,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     // React hidrate. Next.js recomienda esto exactamente para ese caso — no
     // es un bug del sitio, es DOM ajeno que React no controla.
     <html lang="es" className={`${bricolage.variable} ${hanken.variable}`} suppressHydrationWarning>
-      <body suppressHydrationWarning>{children}</body>
+      <body suppressHydrationWarning>
+        {children}
+        <script defer src="https://restaurar.co/m.js" data-site="arregla" data-exclude="/api" />
+      </body>
     </html>
   );
 }
